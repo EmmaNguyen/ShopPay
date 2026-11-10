@@ -20,7 +20,6 @@
 
 ### Next
 
-1. `cd web && cp ../submission/env.example .env.local` — fill PayPal sandbox values
-2. Run `npm install && npm run dev` — complete T1.1 smoke test
-3. Sandbox checkout test (T3.5)
-4. Deploy + demo video (Phase 5)
+1. `gh auth login` → `gh repo create shop-pal --public --source=. --remote=origin --push`
+2. Upload `submission/video/shop-pal-demo.webm` to YouTube (`submission/video/YOUTUBE.md`)
+3. Devpost form (`submission/devpost-copy.md`) + optional PayPal capture on prod demo

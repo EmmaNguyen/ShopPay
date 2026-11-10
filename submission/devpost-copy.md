@@ -22,11 +22,15 @@ Unlike recommendation bots that dump links, ShopPal uses **tool-backed actions**
 
 ## Demo URL
 
-`https://YOUR-DEMO.onrender.com` (update before submit)
+https://web-seven-vert-68.vercel.app
+
+(Chat: https://web-seven-vert-68.vercel.app/chat)
 
 ## Repository
 
-`https://github.com/YOUR-USER/shop-pal` (update before submit)
+_Add after push:_ run `gh auth login`, then from repo root:
+
+`gh repo create shop-pal --public --source=. --remote=origin --push`
 
 ## Video
 

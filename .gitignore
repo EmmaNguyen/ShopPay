@@ -1,4 +1,6 @@
 web/node_modules
+web/.vercel
+submission/video/test-results
 web/.next
 .env
 .env.local

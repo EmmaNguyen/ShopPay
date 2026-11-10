@@ -8,7 +8,9 @@
     "clean": "rm -rf .next",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:paypal": "node scripts/test-paypal.mjs",
+    "record:demo": "DEMO_SLOWMO=1 playwright test e2e/demo.spec.ts"
   },
   "dependencies": {
     "@paypal/react-paypal-js": "^8.8.2",
@@ -18,6 +20,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.0",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
