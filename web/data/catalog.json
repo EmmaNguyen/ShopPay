@@ -1,0 +1,66 @@
+[
+  {
+    "sku": "earbuds-soundwave-lite",
+    "title": "SoundWave Lite Wireless Earbuds",
+    "category": "audio",
+    "priceUsd": 59.99,
+    "tags": ["wireless", "earbuds", "bluetooth", "budget"],
+    "blurb": "Lightweight buds, 24h case battery, solid mic for calls."
+  },
+  {
+    "sku": "earbuds-aerofit-pro",
+    "title": "AeroFit Pro ANC Earbuds",
+    "category": "audio",
+    "priceUsd": 79.99,
+    "tags": ["wireless", "earbuds", "anc", "premium"],
+    "blurb": "Active noise canceling under $80 with USB-C case."
+  },
+  {
+    "sku": "earbuds-basics-bud",
+    "title": "Basics Bud Open-Ear",
+    "category": "audio",
+    "priceUsd": 39.99,
+    "tags": ["wireless", "earbuds", "open-ear"],
+    "blurb": "Awareness mode for commuting; lowest price tier."
+  },
+  {
+    "sku": "keyboard-mechanical-mini",
+    "title": "KeyPal 65% Mechanical Keyboard",
+    "category": "accessories",
+    "priceUsd": 89.0,
+    "tags": ["keyboard", "mechanical"],
+    "blurb": "Hot-swap switches, wireless dual mode."
+  },
+  {
+    "sku": "hub-usb-c-7in1",
+    "title": "NexHub USB-C 7-in-1 Adapter",
+    "category": "accessories",
+    "priceUsd": 45.5,
+    "tags": ["usb-c", "hub", "adapter"],
+    "blurb": "HDMI, SD, PD 100W pass-through."
+  },
+  {
+    "sku": "mouse-ergo-silent",
+    "title": "ErgoSilent Vertical Mouse",
+    "category": "accessories",
+    "priceUsd": 54.0,
+    "tags": ["mouse", "ergonomic"],
+    "blurb": "Quiet clicks, reduces wrist strain."
+  },
+  {
+    "sku": "lamp-desk-smart",
+    "title": "LumaDesk Smart LED Lamp",
+    "category": "home",
+    "priceUsd": 48.0,
+    "tags": ["lamp", "desk", "smart home"],
+    "blurb": "Warm/cool presets, scheduler app."
+  },
+  {
+    "sku": "bottle-insulated-32",
+    "title": "HydroTrack 32oz Bottle",
+    "category": "home",
+    "priceUsd": 32.0,
+    "tags": ["bottle", "insulated"],
+    "blurb": "Keeps cold 24h; fits car cup holders."
+  }
+]

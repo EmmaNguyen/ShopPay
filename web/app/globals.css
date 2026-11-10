@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paypal-navy: #003087;
+  --color-paypal-blue: #0070e0;
+  --color-paypal-light: #009cde;
+  --color-ink: #001435;
+  --color-mist: #f5f7fa;
+  --color-surface: #ffffff;
+  --color-success: #198754;
+  --color-warning: #f5a623;
+  --color-error: #d20000;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-mist text-ink font-sans antialiased;
+}
+
+@keyframes message-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-message-in {
+  animation: message-in 200ms ease-out;
+}
