@@ -13,13 +13,11 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ShopPal — Delegate the cart, keep control of the payment",
-  description:
-    "AI shopping concierge with PayPal sandbox checkout. Built for the PayPal AI Hackathon.",
+  title: "ShopPal — No more fatigue. Just PayPal.",
+  description: "Pick in chat. PayPal after yes, pay.",
   openGraph: {
-    title: "ShopPal — Agentic checkout with PayPal",
-    description:
-      "Compare products in chat, confirm, then pay with PayPal.",
+    title: "ShopPal — No more fatigue. Just PayPal.",
+    description: "Hackathon sandbox — chat to checkout.",
   },
 };
 
@@ -29,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="holidays">
       <body className={`${inter.variable} ${jetbrains.variable}`}>{children}</body>
     </html>
   );

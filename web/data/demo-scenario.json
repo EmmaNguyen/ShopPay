@@ -1,0 +1,20 @@
+{
+  "selectMessage": "I'll take the first one — DFW to MCI.",
+  "prompts": [
+    {
+      "label": "Beat the app rebook",
+      "message": "Skip the Friday 6:40am — show DFW to Kansas City options under $250, tonight or earliest tomorrow.",
+      "phase": "search"
+    },
+    {
+      "label": "MCI or OMA under $250",
+      "message": "MCI direct if you can; otherwise DFW to OMA under $250. Bags stay checked through.",
+      "phase": "search"
+    },
+    {
+      "label": "DFW→MCI saver",
+      "message": "I'll take the first one — DFW to MCI.",
+      "phase": "select"
+    }
+  ]
+}

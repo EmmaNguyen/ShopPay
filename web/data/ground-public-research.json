@@ -1,0 +1,285 @@
+{
+  "compiledAt": "2026-11-11",
+  "route": "Dallas/Fort Worth area → Kansas City, Missouri",
+  "distanceMiles": 519,
+  "driveHoursTypical": 7.5,
+  "sources": [
+    {
+      "label": "Greyhound — Dallas to Kansas City",
+      "url": "https://www.greyhound.com/bus-routes/dallas-tx-kansas-city-mo",
+      "note": "From $61.98 · ~10 hr · 519 mi · 6 daily departures (scraped marketing copy, Nov 2025)."
+    },
+    {
+      "label": "CheckMyBus — Fort Worth to Kansas City",
+      "url": "https://www.checkmybus.com/fort-worth-tx/kansas-city-mo",
+      "note": "FlixBus samples ~$75–92 · 12–14 hr from Fort Worth area."
+    },
+    {
+      "label": "Qeeq — DFW one-way to Kansas City Airport",
+      "url": "https://www.qeeq.com/one-way-car-rentals/dallas-fort-worth-airport-99291-to-kansas-city-airport-99352",
+      "note": "National / major brands from ~$158 total including one-way fee (aggregator snapshot)."
+    },
+    {
+      "label": "National — one-way rental",
+      "url": "https://www.nationalcar.com/en/car-rental/one-way.html",
+      "note": "Unlimited mileage one-way between airports; drop charge often waived airport-to-airport."
+    },
+    {
+      "label": "GO Airport Shuttle",
+      "url": "https://gowithus.com/",
+      "note": "Private vans at DFW and MCI; long-haul DFW–KC not priced online — use coach comparables for demo fast lane."
+    },
+    {
+      "label": "Wanderu — Amtrak Dallas to Kansas City",
+      "url": "https://www.wanderu.com/en-us/train/us-tx/dallas/us-mo/kansas-city/",
+      "note": "Texas Eagle · from $142 · ~29 hr avg · 454 mi rail distance."
+    },
+    {
+      "label": "RideWise — Uber long-distance (Dallas rate card)",
+      "url": "https://getridewise.com/blog/uber-long-distance-trips-cost-guide",
+      "note": "519 mi from DFW corridor modeled ~$353–$770 on Dallas UberX rates (Sep 2026)."
+    },
+    {
+      "label": "UpHail — Lyft Kansas City rate table",
+      "url": "https://uphail.com/us/mo/kansas-city/",
+      "note": "KC→St. Louis sample $450–484; DFW–KC modeled from per-mile rates."
+    }
+  ],
+  "offers": [
+    {
+      "offerId": "live-greyhound-dallas-kc",
+      "transportMode": "ground",
+      "groundType": "bus",
+      "origin": "DFW",
+      "destination": "MCI",
+      "departureDate": "2026-11-21",
+      "departureLocal": "03:25",
+      "arrivalLocal": "13:25",
+      "durationMin": 600,
+      "priceUsd": 61.98,
+      "vendor": "Greyhound",
+      "serviceName": "Dallas bus station to Kansas City",
+      "vehicle": "Motorcoach · Wi‑Fi · power outlets",
+      "distanceMiles": 519,
+      "stops": 0,
+      "fareFamily": "Economy",
+      "sourceUrl": "https://www.greyhound.com/bus-routes/dallas-tx-kansas-city-mo",
+      "sourceLabel": "Greyhound.com",
+      "blurb": "Lowest published coach fare on the corridor — first departure of the day after the cancel night.",
+      "timelineStops": [
+        {
+          "time": "03:25",
+          "place": "Dallas bus station",
+          "detail": "Board · Greyhound · cited route page"
+        },
+        {
+          "time": "",
+          "place": "",
+          "detail": "About 10 hours · 519 miles (Greyhound)"
+        },
+        {
+          "time": "13:25",
+          "place": "Kansas City bus station",
+          "detail": "Arrive · 21 November"
+        }
+      ]
+    },
+    {
+      "offerId": "live-flixbus-fw-kc",
+      "transportMode": "ground",
+      "groundType": "shuttle",
+      "origin": "DFW",
+      "destination": "MCI",
+      "departureDate": "2026-11-21",
+      "departureLocal": "07:50",
+      "arrivalLocal": "20:10",
+      "durationMin": 740,
+      "priceUsd": 82,
+      "vendor": "FlixBus",
+      "serviceName": "Fort Worth area to Kansas City coach",
+      "vehicle": "Coach · economy",
+      "distanceMiles": 519,
+      "stops": 0,
+      "fareFamily": "Economy",
+      "sourceUrl": "https://www.checkmybus.com/fort-worth-tx/kansas-city-mo",
+      "sourceLabel": "CheckMyBus · FlixBus",
+      "blurb": "Sample same-day coach (~12 hr 20 min) from aggregators — faster than overnight bus for some departures.",
+      "timelineStops": [
+        {
+          "time": "07:50",
+          "place": "Fort Worth (Vonlane stop)",
+          "detail": "Board · ~30 min from DFW terminals"
+        },
+        {
+          "time": "",
+          "place": "",
+          "detail": "About 12 hours 20 minutes (FlixBus sample)"
+        },
+        {
+          "time": "20:10",
+          "place": "Kansas City Greyhound station",
+          "detail": "Arrive"
+        }
+      ]
+    },
+    {
+      "offerId": "live-national-dfw-mci",
+      "transportMode": "ground",
+      "groundType": "rental",
+      "origin": "DFW",
+      "destination": "MCI",
+      "departureDate": "2026-11-21",
+      "departureLocal": "00:30",
+      "arrivalLocal": "08:00",
+      "durationMin": 450,
+      "priceUsd": 157.63,
+      "vendor": "National Car Rental",
+      "serviceName": "One-way DFW airport → Kansas City airport",
+      "vehicle": "Midsize · unlimited miles (policy)",
+      "distanceMiles": 519,
+      "stops": 0,
+      "fareFamily": "Pay at counter",
+      "sourceUrl": "https://www.qeeq.com/one-way-car-rentals/dallas-fort-worth-airport-99291-to-kansas-city-airport-99352",
+      "sourceLabel": "Qeeq aggregator · National",
+      "blurb": "Published one-way total including fee — ~7.5 hr drive on I-35; return at MCI.",
+      "timelineStops": [
+        {
+          "time": "00:30",
+          "place": "DFW Rental Car Center",
+          "detail": "Pick up · 2424 E 38th St (National)"
+        },
+        {
+          "time": "",
+          "place": "",
+          "detail": "519 miles · about 7–8 hours driving"
+        },
+        {
+          "time": "08:00",
+          "place": "Kansas City International Airport",
+          "detail": "Drop off one-way"
+        }
+      ]
+    },
+    {
+      "offerId": "live-amtrak-texas-eagle",
+      "transportMode": "ground",
+      "groundType": "train",
+      "origin": "DFW",
+      "destination": "MCI",
+      "departureDate": "2026-11-21",
+      "arrivalDate": "2026-11-22",
+      "departureLocal": "15:43",
+      "arrivalLocal": "13:50",
+      "durationMin": 1327,
+      "priceUsd": 165,
+      "vendor": "Amtrak",
+      "serviceName": "Texas Eagle · 1 transfer",
+      "vehicle": "Coach · St. Louis connection",
+      "distanceMiles": 454,
+      "stops": 1,
+      "fareFamily": "Coach",
+      "sourceUrl": "https://www.wanderu.com/en-us/train/us-tx/dallas/us-mo/kansas-city/",
+      "sourceLabel": "Wanderu · Amtrak",
+      "blurb": "Daily 3:43 PM from Dallas Union — arrives KC next day; connect from DFW via DART or rideshare.",
+      "timelineStops": [
+        {
+          "time": "12:15",
+          "place": "DFW Airport",
+          "detail": "Transfer to Dallas Union Station"
+        },
+        {
+          "time": "15:43",
+          "place": "Dallas Union Station",
+          "detail": "Board Texas Eagle"
+        },
+        {
+          "time": "",
+          "place": "St. Louis",
+          "detail": "Transfer · Missouri River Runner (Rome2Rio ~22 hr total)"
+        },
+        {
+          "time": "13:50",
+          "place": "Kansas City Union Station",
+          "detail": "Arrive · 22 November"
+        }
+      ]
+    },
+    {
+      "offerId": "live-uber-dfw-kc",
+      "transportMode": "ground",
+      "groundType": "rideshare",
+      "origin": "DFW",
+      "destination": "MCI",
+      "departureDate": "2026-11-21",
+      "departureLocal": "00:45",
+      "arrivalLocal": "10:15",
+      "durationMin": 573,
+      "priceUsd": 398,
+      "vendor": "Uber",
+      "serviceName": "UberX · door-to-door",
+      "vehicle": "Sedan · surge excluded",
+      "distanceMiles": 519,
+      "stops": 0,
+      "fareFamily": "Estimate",
+      "sourceUrl": "https://getridewise.com/blog/uber-long-distance-trips-cost-guide",
+      "sourceLabel": "RideWise rate model",
+      "blurb": "Mid estimate for ~519 mi from Dallas pickup rates ($353–$770). Long trips may be declined — check app.",
+      "timelineStops": [
+        {
+          "time": "00:45",
+          "place": "DFW Terminal C",
+          "detail": "Pickup · UberX"
+        },
+        {
+          "time": "",
+          "place": "",
+          "detail": "~9.5 hours drive · I-35"
+        },
+        {
+          "time": "10:15",
+          "place": "Kansas City",
+          "detail": "Drop-off (your address)"
+        }
+      ]
+    },
+    {
+      "offerId": "live-lyft-dfw-kc",
+      "transportMode": "ground",
+      "groundType": "rideshare",
+      "origin": "DFW",
+      "destination": "MCI",
+      "departureDate": "2026-11-21",
+      "departureLocal": "00:45",
+      "arrivalLocal": "10:15",
+      "durationMin": 573,
+      "priceUsd": 405,
+      "vendor": "Lyft",
+      "serviceName": "Standard · door-to-door",
+      "vehicle": "Sedan · surge excluded",
+      "distanceMiles": 519,
+      "stops": 0,
+      "fareFamily": "Estimate",
+      "sourceUrl": "https://uphail.com/us/mo/kansas-city/",
+      "sourceLabel": "UpHail · modeled",
+      "blurb": "Modeled from Dallas/KC per-mile tables — similar band to Uber for 519 mi; confirm in Lyft app.",
+      "timelineStops": [
+        {
+          "time": "00:45",
+          "place": "DFW Terminal C",
+          "detail": "Pickup · Lyft Standard"
+        },
+        {
+          "time": "",
+          "place": "",
+          "detail": "~9.5 hours · tolls extra"
+        },
+        {
+          "time": "10:15",
+          "place": "Kansas City",
+          "detail": "Drop-off"
+        }
+      ]
+    }
+  ],
+  "checkedAt": "2026-11-11T03:30:19.006Z"
+}

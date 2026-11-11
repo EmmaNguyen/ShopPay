@@ -1,0 +1,149 @@
+{
+  "api": "shop-pal-mock-ota",
+  "version": 1,
+  "compiledAt": "2026-11-11",
+  "holiday": {
+    "name": "Thanksgiving",
+    "usDate": "2026-11-26",
+    "searchWindow": ["2026-11-20", "2026-11-21"]
+  },
+  "sources": [
+    {
+      "label": "AviaScanner DFW–MCI averages",
+      "url": "https://avia-scanner.com/en/DFW-MCI-flights",
+      "note": "Nov nonstop round-trip ~$410 (~$205 one-way equivalent); Sep low ~$202 RT."
+    },
+    {
+      "label": "momondo DFW–MCI",
+      "url": "https://www.momondo.com/flights/dallasfort-worth-intl-airport-dfw/kansas-city",
+      "note": "November round-trip average cited ~$299."
+    },
+    {
+      "label": "Upgraded Points holiday study",
+      "url": "https://upgradedpoints.com/news/best-day-fly-during-holidays/",
+      "note": "Thanksgiving week one-way ~55% above early Nov baseline (Google Flights sample)."
+    },
+    {
+      "label": "American DFW–OMA calendar",
+      "url": "https://www.aa.com/en-us/flights-from-dallas-to-omaha",
+      "note": "Late-Nov round-trip from ~$371; one-way nonstop on sale days higher."
+    }
+  ],
+  "routes": [
+    { "origin": "DFW", "destination": "MCI", "label": "Dallas/Fort Worth → Kansas City" },
+    { "origin": "DFW", "destination": "OMA", "label": "Dallas/Fort Worth → Omaha" },
+    { "origin": "BOS", "destination": "DFW", "label": "Boston → Dallas (inbound to cancel)" }
+  ],
+  "offers": [
+    {
+      "offerId": "mock-aa-dfw-mci-0715",
+      "origin": "DFW",
+      "destination": "MCI",
+      "departureDate": "2026-11-21",
+      "departureLocal": "06:15",
+      "arrivalLocal": "07:56",
+      "carrier": "AA",
+      "flightNumber": "2651",
+      "cabin": "economy",
+      "stops": 0,
+      "durationMin": 101,
+      "priceUsd": 189,
+      "fareFamily": "Main Cabin",
+      "blurb": "First Friday morning nonstop after last night’s cancel — in Kansas City before lunch."
+    },
+    {
+      "offerId": "mock-aa-dfw-mci-1910",
+      "origin": "DFW",
+      "destination": "MCI",
+      "departureDate": "2026-11-20",
+      "arrivalDate": "2026-11-21",
+      "departureLocal": "23:25",
+      "arrivalLocal": "00:58",
+      "carrier": "AA",
+      "flightNumber": "2196",
+      "cabin": "economy",
+      "stops": 0,
+      "durationMin": 98,
+      "priceUsd": 218,
+      "fareFamily": "Main Cabin",
+      "blurb": "Last nonstop out tonight after the ground stop — lands Kansas City just before 1 AM."
+    },
+    {
+      "offerId": "mock-f9-dfw-mci-1stop",
+      "origin": "DFW",
+      "destination": "MCI",
+      "departureDate": "2026-11-20",
+      "arrivalDate": "2026-11-21",
+      "departureLocal": "23:40",
+      "arrivalLocal": "05:05",
+      "carrier": "F9",
+      "flightNumber": "3214",
+      "cabin": "economy",
+      "stops": 1,
+      "durationMin": 285,
+      "priceUsd": 148,
+      "fareFamily": "Basic",
+      "blurb": "Cheapest seat left tonight via Denver — lands Kansas City early Saturday morning.",
+      "layover": {
+        "airport": "DEN",
+        "city": "Denver",
+        "arrive": "00:52",
+        "depart": "02:05"
+      }
+    },
+    {
+      "offerId": "mock-aa-dfw-oma-0640",
+      "origin": "DFW",
+      "destination": "OMA",
+      "departureDate": "2026-11-21",
+      "departureLocal": "06:40",
+      "arrivalLocal": "08:32",
+      "carrier": "AA",
+      "flightNumber": "2266",
+      "cabin": "economy",
+      "stops": 0,
+      "durationMin": 112,
+      "priceUsd": 198,
+      "fareFamily": "Main Cabin",
+      "blurb": "Saturday nonstop home to Omaha — skips the Kansas City Thanksgiving stop."
+    },
+    {
+      "offerId": "mock-ua-dfw-oma-1stop",
+      "origin": "DFW",
+      "destination": "OMA",
+      "departureDate": "2026-11-21",
+      "departureLocal": "07:55",
+      "arrivalLocal": "12:40",
+      "carrier": "UA",
+      "flightNumber": "6122",
+      "cabin": "economy",
+      "stops": 1,
+      "durationMin": 285,
+      "priceUsd": 172,
+      "fareFamily": "Economy",
+      "blurb": "1 stop IAH — alternate hub exit when MCI nonstops sell out.",
+      "layover": {
+        "airport": "IAH",
+        "city": "Houston",
+        "arrive": "09:18",
+        "depart": "10:35"
+      }
+    },
+    {
+      "offerId": "mock-aa-bos-dfw-1615",
+      "origin": "BOS",
+      "destination": "DFW",
+      "departureDate": "2026-11-20",
+      "departureLocal": "16:15",
+      "arrivalLocal": "20:47",
+      "carrier": "AA",
+      "flightNumber": "1423",
+      "cabin": "economy",
+      "stops": 0,
+      "durationMin": 268,
+      "priceUsd": 241,
+      "fareFamily": "Main Cabin",
+      "blurb": "Inbound 20 Nov — arrived Dallas/Fort Worth late; missed the tight connection before weather cancel."
+    }
+  ]
+}

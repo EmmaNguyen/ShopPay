@@ -1,13 +1,16 @@
 import { getProductBySku, searchProducts } from "@/lib/catalog";
+import { resolveProduct } from "@/lib/catalog-resolve";
 import { userConfirmedPayment } from "@/lib/confirm";
 import { getSession, updateSession } from "@/lib/session";
-import type { Product } from "@/lib/types";
+import type { AssistantUi, Product } from "@/lib/types";
 
 export type ToolResult = {
   reply: string;
   products?: Product[];
   awaitingPayment?: boolean;
   selectedProduct?: Product;
+  selectedSku?: string;
+  ui?: AssistantUi;
 };
 
 export function toolSearchProducts(
@@ -21,16 +24,16 @@ export function toolSearchProducts(
     awaitingPayment: false,
     preparedOrderSku: undefined,
   });
-  const lines = results.map(
-    (p, i) =>
-      `${i + 1}. **${p.title}** — $${p.priceUsd.toFixed(2)} (${p.blurb})`
-  );
   return {
-    reply:
-      results.length > 0
-        ? `Here are ${results.length} options:\n\n${lines.join("\n")}\n\nTell me which one you want (e.g. "buy the second one"). I'll ask you to reply **yes, pay** before PayPal checkout.`
-        : "I couldn't find matches. Try different keywords or a higher budget.",
+    reply: results.length > 0 ? "" : "No matches — try a higher budget.",
     products: results,
+    ui: {
+      step: "pick",
+      label:
+        results.length > 0
+          ? `${results.length} fares · tap to select`
+          : undefined,
+    },
   };
 }
 
@@ -49,7 +52,7 @@ export function toolSelectProduct(
     }
     sku = pick.sku;
   }
-  const product = getProductBySku(sku);
+  let product = resolveProduct(sessionId, sku);
   if (!product) {
     const fromLast = session.lastSearchResults.find(
       (p) => p.sku === skuOrIndex || p.title.toLowerCase().includes(skuOrIndex.toLowerCase())
@@ -58,12 +61,16 @@ export function toolSelectProduct(
       return { reply: "That product isn't in the catalog. Pick from the list above." };
     }
     sku = fromLast.sku;
+    product = fromLast;
   }
-  const selected = getProductBySku(sku)!;
+  const selected = product;
   updateSession(sessionId, { selectedSku: sku, awaitingPayment: false });
   return {
-    reply: `Great — **${selected.title}** at **$${selected.priceUsd.toFixed(2)}**. When you're ready, reply **yes, pay** and I'll open PayPal checkout.`,
+    reply: "",
     selectedProduct: selected,
+    selectedSku: sku,
+    products: [selected],
+    ui: { step: "consent", label: "Consent before PayPal" },
   };
 }
 
@@ -73,8 +80,8 @@ export function toolPrepareCheckout(
 ): ToolResult {
   if (!userConfirmedPayment(userMessage)) {
     return {
-      reply:
-        'I need explicit consent first. Reply **yes, pay** to start PayPal checkout.',
+      reply: "",
+      ui: { step: "consent", label: "Say yes, pay first" },
     };
   }
   const session = getSession(sessionId);
@@ -83,7 +90,7 @@ export function toolPrepareCheckout(
       reply: "Which product should I buy? Pick one from the list first.",
     };
   }
-  const product = getProductBySku(session.selectedSku);
+  const product = resolveProduct(sessionId, session.selectedSku);
   if (!product) {
     return { reply: "Selected product is invalid. Please choose again." };
   }
@@ -92,8 +99,10 @@ export function toolPrepareCheckout(
     preparedOrderSku: product.sku,
   });
   return {
-    reply: `Starting PayPal checkout for **${product.title}** ($${product.priceUsd.toFixed(2)}). Use the PayPal button below.`,
+    reply: "",
     awaitingPayment: true,
     selectedProduct: product,
+    selectedSku: product.sku,
+    ui: { step: "checkout", label: "PayPal checkout" },
   };
 }

@@ -1,9 +1,11 @@
 import { getProductBySku } from "@/lib/catalog";
+import { resolveProduct } from "@/lib/catalog-resolve";
 import { createPayPalOrder, paypalConfigured } from "@/lib/paypal";
 import { z } from "zod";
 
 const BodySchema = z.object({
   sku: z.string().min(1),
+  sessionId: z.string().uuid().optional(),
 });
 
 export async function POST(request: Request) {
@@ -13,9 +15,12 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid body" }, { status: 400 });
   }
 
-  const product = getProductBySku(parsed.data.sku);
+  const product =
+    (parsed.data.sessionId
+      ? resolveProduct(parsed.data.sessionId, parsed.data.sku)
+      : undefined) ?? getProductBySku(parsed.data.sku);
   if (!product) {
-    return Response.json({ error: "Unknown SKU" }, { status: 404 });
+    return Response.json({ error: "Unknown fare" }, { status: 404 });
   }
 
   if (!paypalConfigured()) {

@@ -6,11 +6,21 @@
     "dev": "next dev",
     "dev:clean": "rm -rf .next && next dev",
     "clean": "rm -rf .next",
+    "prebuild": "npm run sync:demo-video 2>/dev/null || true",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "demo:mock-ota": "node scripts/run-mock-ota-demo.mjs",
+    "research:ground": "node scripts/research-ground.mjs",
+    "research:oma": "node scripts/research-dfw-oma.mjs",
     "test:paypal": "node scripts/test-paypal.mjs",
-    "record:demo": "DEMO_SLOWMO=1 playwright test e2e/demo.spec.ts"
+    "record:demo": "DEMO_SLOWMO=1 playwright test e2e/demo.spec.ts",
+    "capture:chat-clip": "node scripts/capture-chat-clip.mjs",
+    "sync:demo-video": "mkdir -p public/video && cp ../submission/video/shop-pal-hackathon-60s-with-audio.mp4 public/video/shop-pal-hackathon-60s.mp4",
+    "build:thumbnail": "python3 scripts/build_shop_pal_thumbnail.py",
+    "build:video": "node scripts/capture-chat-clip.mjs && python3 scripts/build_shoppal_visual_video.py && npm run sync:demo-video",
+    "build:video:screen": "node scripts/build-demo-video.mjs",
+    "build:video:audio": "python3 scripts/mix_shoppal_video_audio.py"
   },
   "dependencies": {
     "@paypal/react-paypal-js": "^8.8.2",

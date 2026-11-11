@@ -10,6 +10,20 @@
   --color-success: #198754;
   --color-warning: #f5a623;
   --color-error: #d20000;
+  --color-holiday-cranberry: #9b2335;
+  --color-holiday-pine: #1b4d3e;
+  --color-holiday-gold: #c9a227;
+  --color-holiday-cream: #faf6f0;
+  --color-holiday-frost: #e8f0f8;
+  /* Palette H — landing + demo video */
+  --color-sp-paper: #f2f2ef;
+  --color-sp-ink: #0d0d0d;
+  --color-sp-amber: #f2b53a;
+  --color-sp-muted: #8e6f25;
+  --color-sp-flap: #0d0d0d;
+  --color-sp-surface: #141413;
+  --color-sp-rule: #c9c4bc;
+  --color-sp-alert: #ef5350;
   --font-sans: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
@@ -18,8 +32,61 @@ html {
   scroll-behavior: smooth;
 }
 
+html[data-theme="holidays"] body {
+  @apply text-ink font-sans antialiased;
+  background-color: var(--color-holiday-cream);
+  background-image:
+    radial-gradient(
+      circle at 10% 20%,
+      color-mix(in srgb, var(--color-holiday-frost) 80%, transparent),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 90% 10%,
+      color-mix(in srgb, var(--color-holiday-gold) 12%, transparent),
+      transparent 35%
+    );
+}
+
 body {
   @apply bg-mist text-ink font-sans antialiased;
+}
+
+.shoppal-hero {
+  background: linear-gradient(180deg, var(--color-sp-flap) 0%, #12243a 55%, #1a2830 100%);
+}
+
+.holiday-hero {
+  background: linear-gradient(180deg, var(--color-sp-flap) 0%, #12243a 55%, #1a2830 100%);
+}
+
+.holiday-cta {
+  background: linear-gradient(
+    135deg,
+    var(--color-holiday-pine) 0%,
+    var(--color-holiday-cranberry) 55%,
+    var(--color-paypal-navy) 100%
+  );
+}
+
+.holiday-badge {
+  @apply inline-flex items-center gap-2 rounded-full border border-sp-amber/50 bg-white/10 px-3 py-1 text-xs font-medium text-white/95;
+}
+
+.shoppal-badge {
+  @apply inline-flex items-center gap-2 rounded-full border border-sp-amber/45 bg-white/10 px-3 py-1 text-xs font-mono font-medium tracking-wide text-sp-amber;
+}
+
+.shoppal-card {
+  @apply rounded-2xl bg-white border border-sp-rule p-6 shadow-sm;
+}
+
+.shoppal-cta-primary {
+  @apply rounded-full bg-sp-amber text-sp-ink px-8 py-3.5 text-base font-bold shadow-lg hover:brightness-105 transition;
+}
+
+.shoppal-cta-secondary {
+  @apply rounded-full border border-white/25 text-white/90 px-6 py-3.5 text-sm font-semibold hover:bg-white/10 transition;
 }
 
 @keyframes message-in {

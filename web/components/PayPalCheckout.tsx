@@ -9,6 +9,7 @@ import type { Product } from "@/lib/types";
 
 type Props = {
   product: Product;
+  sessionId: string | null;
   demoMode: boolean;
   onSuccess: (orderId: string, status: string) => void;
   onError: (message: string) => void;
@@ -16,6 +17,7 @@ type Props = {
 
 export function PayPalCheckout({
   product,
+  sessionId,
   demoMode,
   onSuccess,
   onError,
@@ -25,10 +27,12 @@ export function PayPalCheckout({
 
   if (demoMode) {
     return (
-      <div className="rounded-xl border border-warning/50 bg-amber-50 p-4">
-        <p className="text-sm font-medium text-ink mb-3">
-          Simulated payment (demo mode) — PayPal credentials not configured
-        </p>
+      <div className="rounded-2xl border border-paypal-blue/25 bg-gradient-to-b from-mist to-surface p-4 shadow-sm">
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <p className="text-sm font-bold text-paypal-navy">PayPal sandbox</p>
+          <span className="text-xs font-mono text-ink/45">${product.priceUsd.toFixed(2)}</span>
+        </div>
+        <p className="text-xs text-ink/55 mb-3 truncate">{product.title}</p>
         <button
           type="button"
           className="w-full rounded-lg bg-paypal-blue text-white py-3 font-semibold"
@@ -55,7 +59,10 @@ export function PayPalCheckout({
             const res = await fetch("/api/checkout/create-order", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ sku: product.sku }),
+              body: JSON.stringify({
+                sku: product.sku,
+                ...(sessionId ? { sessionId } : {}),
+              }),
             });
             const data = (await res.json()) as { orderId?: string; error?: string };
             if (!res.ok || !data.orderId) {
@@ -103,10 +110,9 @@ function CheckoutCard({
   children: ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-paypal-navy/15 bg-surface p-4 shadow-md animate-message-in">
-      <p className="text-sm text-ink/80 mb-3">
-        PayPal checkout: <strong>{product.title}</strong> — $
-        {product.priceUsd.toFixed(2)}
+    <div className="rounded-2xl border border-paypal-navy/15 bg-surface p-4 shadow-md animate-message-in">
+      <p className="text-xs font-semibold uppercase tracking-wide text-ink/50 mb-2">
+        Approve in PayPal
       </p>
       {children}
     </div>

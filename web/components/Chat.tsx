@@ -1,164 +1,376 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { MessageBubble } from "@/components/MessageBubble";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PayPalCheckout } from "@/components/PayPalCheckout";
 import { ProductCard } from "@/components/ProductCard";
-import type { ChatMessage, Product } from "@/lib/types";
+import { AgentStepper } from "@/components/chat/AgentStepper";
+import { OldTicket } from "@/components/chat/OldTicket";
+import { ChatSituationBar } from "@/components/chat/ChatSituationBar";
+import { MobilityModePicker } from "@/components/chat/MobilityModePicker";
+import { DestinationPicker } from "@/components/chat/DestinationPicker";
+import { RouteRibbon } from "@/components/chat/RouteRibbon";
+import {
+  parseRebookDestination,
+  type RebookDestinationCode,
+} from "@/lib/flights/rebook-destination";
+import { TrackLegend } from "@/components/chat/TrackLegend";
+import {
+  MOBILITY_MODES,
+  mobilityModesQuery,
+  type MobilityMode,
+} from "@/lib/flights/mobility-modes";
+import { ConsentBanner } from "@/components/chat/ConsentBanner";
+import { PaymentReceipt } from "@/components/chat/PaymentReceipt";
+import type { AssistantUiStep, Product } from "@/lib/types";
 
-type Turn = ChatMessage & {
-  products?: Product[];
+type FareTrackView = {
+  id: string;
+  label: string;
+  tagline: string;
+  product: Product;
 };
+
+type Phase = "pick" | "consent" | "checkout" | "done";
 
 export function Chat() {
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [turns, setTurns] = useState<Turn[]>([
-    {
-      role: "assistant",
-      content:
-        'Hi — I\'m ShopPal. Try: **wireless earbuds under $80**. I\'ll show options, you pick one, then say **yes, pay** before PayPal checkout.',
-    },
+  const [offers, setOffers] = useState<Product[]>([]);
+  const [tracks, setTracks] = useState<FareTrackView[]>([]);
+  const [alsoConsider, setAlsoConsider] = useState<Product[]>([]);
+  const [mobilityModes, setMobilityModes] = useState<MobilityMode[]>([
+    ...MOBILITY_MODES,
   ]);
-  const [input, setInput] = useState("");
+  const [destination, setDestination] = useState<RebookDestinationCode>("MCI");
+  const [optionsReady, setOptionsReady] = useState(false);
+  const [fareSource, setFareSource] = useState<
+    "mock-ota" | "mixed-rebook" | "ground-research" | "duffel" | "amadeus" | "catalog" | null
+  >(null);
   const [loading, setLoading] = useState(false);
-  const [checkoutProduct, setCheckoutProduct] = useState<Product | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [demoMode, setDemoMode] = useState(false);
+  const [selectedSku, setSelectedSku] = useState<string | null>(null);
+  const [heldProduct, setHeldProduct] = useState<Product | null>(null);
+  const [checkoutProduct, setCheckoutProduct] = useState<Product | null>(null);
+  const [receipt, setReceipt] = useState<{ orderId: string; status: string } | null>(
+    null
+  );
 
-  const sendMessage = useCallback(
-    async (text: string) => {
-      const trimmed = text.trim();
-      if (!trimmed || loading) return;
+  const phase: Phase = useMemo(() => {
+    if (receipt) return "done";
+    if (checkoutProduct) return "checkout";
+    if (heldProduct) return "consent";
+    return "pick";
+  }, [receipt, checkoutProduct, heldProduct]);
 
-      const userTurn: Turn = { role: "user", content: trimmed };
-      const nextTurns = [...turns, userTurn];
-      setTurns(nextTurns);
-      setInput("");
+  const stepperStep: AssistantUiStep = phase === "done" ? "done" : phase;
+  const consentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (heldProduct && phase === "consent") {
+      consentRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [heldProduct, phase]);
+
+  const loadOptions = useCallback(
+    async (modes: MobilityMode[], dest: RebookDestinationCode) => {
       setLoading(true);
-      setCheckoutProduct(null);
-
-      const messages = nextTurns.map(({ role, content }) => ({ role, content }));
-
+      setError(null);
       try {
-        const res = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages, sessionId }),
+        const params = new URLSearchParams({
+          origin: "DFW",
+          destination: dest,
+          modes: mobilityModesQuery(modes),
         });
+        params.set("createSession", sessionId ? "false" : "true");
+        if (sessionId) params.set("sessionId", sessionId);
+        const res = await fetch(`/api/ota/v1/search?${params.toString()}`);
+        if (!res.ok) throw new Error("Could not load fares");
         const data = (await res.json()) as {
-          reply: string;
-          products?: Product[];
-          awaitingPayment?: boolean;
-          selectedProduct?: Product;
-          sessionId: string;
+          sessionId?: string;
+          products: Product[];
+          tracks?: FareTrackView[];
+          alsoConsider?: Product[];
+          fareSource?:
+            | "mock-ota"
+            | "mixed-rebook"
+            | "ground-research"
+            | "duffel"
+            | "amadeus"
+            | "catalog";
           demoMode?: boolean;
+          count?: number;
         };
-        if (data.sessionId) setSessionId(data.sessionId);
-        if (data.demoMode != null) setDemoMode(data.demoMode);
-
-        setTurns((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: data.reply,
-            products: data.products,
-          },
-        ]);
-
-        if (data.awaitingPayment && data.selectedProduct) {
-          setCheckoutProduct(data.selectedProduct);
+        if (data.count === 0) {
+          setError(
+            dest === "OMA"
+              ? "No Omaha flights — try ✈︎ only or rebook the KC stop (MCI)."
+              : "No matches — add ✈︎ or bus."
+          );
+          setOptionsReady(false);
+          return;
         }
+        if (data.sessionId) setSessionId(data.sessionId);
+        setTracks(data.tracks ?? []);
+        setAlsoConsider(data.alsoConsider ?? []);
+        setOffers(data.products);
+        if (data.fareSource) setFareSource(data.fareSource);
+        if (data.demoMode != null) setDemoMode(data.demoMode);
+        setOptionsReady(true);
+        setSelectedSku(null);
+        setHeldProduct(null);
       } catch {
-        setTurns((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: "Something went wrong. Is the dev server running?",
-          },
-        ]);
+        setError("Couldn’t load fares — try again.");
       } finally {
         setLoading(false);
       }
     },
-    [loading, sessionId, turns]
+    [sessionId]
   );
 
-  const onSelectProduct = (sku: string) => {
-    const idx = turns[turns.length - 1]?.products?.findIndex((p) => p.sku === sku);
-    const label =
-      idx != null && idx >= 0 ? `I'll take option ${idx + 1}` : `I'll take ${sku}`;
-    void sendMessage(label);
-  };
+  const onApplyMobilityModes = useCallback(() => {
+    const modesForSearch: MobilityMode[] =
+      destination === "OMA" ? ["flight"] : mobilityModes;
+    void loadOptions(modesForSearch, destination);
+  }, [loadOptions, mobilityModes, destination]);
+
+  const onDestinationChange = useCallback(
+    (dest: RebookDestinationCode) => {
+      setDestination(dest);
+      setOptionsReady(false);
+      setTracks([]);
+      setAlsoConsider([]);
+      setOffers([]);
+      if (dest === "OMA" && mobilityModes.some((m) => m !== "flight")) {
+        setMobilityModes(["flight"]);
+      }
+    },
+    [mobilityModes]
+  );
+
+  const onSelectFare = useCallback(
+    async (sku: string) => {
+      if (loading) return;
+      if (!sessionId) {
+        setError("Tap Show 3 picks first — then choose a fare.");
+        return;
+      }
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/demo/select", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId, sku }),
+        });
+        const data = (await res.json()) as {
+          selectedProduct?: Product;
+          selectedSku?: string;
+          demoMode?: boolean;
+          reply?: string;
+          error?: string;
+        };
+        if (!res.ok) {
+          throw new Error(data.error ?? "Select failed");
+        }
+        if (data.demoMode != null) setDemoMode(data.demoMode);
+        if (data.selectedSku) setSelectedSku(data.selectedSku);
+        if (data.selectedProduct) {
+          setHeldProduct(data.selectedProduct);
+        } else {
+          setError(data.reply ?? "Couldn’t hold that fare — search again.");
+        }
+      } catch {
+        setError("Couldn’t hold that fare — try again.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [sessionId, loading]
+  );
+
+  const onConfirmPay = useCallback(async () => {
+    if (!sessionId || loading) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/demo/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      });
+      if (!res.ok) throw new Error("Confirm failed");
+      const data = (await res.json()) as {
+        awaitingPayment?: boolean;
+        selectedProduct?: Product;
+        demoMode?: boolean;
+      };
+      if (data.demoMode != null) setDemoMode(data.demoMode);
+      if (data.awaitingPayment && data.selectedProduct) {
+        setHeldProduct(null);
+        setCheckoutProduct(data.selectedProduct);
+      }
+    } catch {
+      setError("Couldn’t start checkout — try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, [sessionId, loading]);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] max-h-[720px]">
-      <div className="flex-1 overflow-y-auto space-y-4 pr-1">
-        {turns.map((t, i) => (
-          <div key={i} className="space-y-3">
-            <MessageBubble role={t.role} content={t.content} />
-            {t.products && t.products.length > 0 && (
-              <div className="grid gap-3">
-                {t.products.map((p, j) => (
+    <div className="flex flex-col gap-3 min-h-[60vh]">
+      <ChatSituationBar />
+      <RouteRibbon destination={destination} />
+      <AgentStepper active={stepperStep} />
+      {fareSource ? (
+        <div className="h-1 rounded-full bg-black/5 overflow-hidden" aria-hidden>
+          <div
+            className={`h-full w-1/3 rounded-full ${
+              fareSource === "mixed-rebook" ? "bg-paypal-blue" : "bg-ink/30"
+            }`}
+          />
+        </div>
+      ) : null}
+      {error ? (
+        <p className="text-sm text-red-600" role="alert">
+          {error}
+        </p>
+      ) : null}
+
+      <div className="space-y-4">
+        {loading && optionsReady ? (
+          <div className="flex justify-center" aria-label="Loading options">
+            <span className="block h-8 w-8 animate-spin rounded-full border-2 border-paypal-blue/30 border-t-paypal-blue" />
+          </div>
+        ) : null}
+
+        {phase === "pick" || phase === "consent" ? (
+          <div className="flex flex-col gap-3 max-w-lg mx-auto w-full">
+            <OldTicket />
+            <DestinationPicker
+              value={destination}
+              onChange={onDestinationChange}
+              disabled={phase === "consent"}
+            />
+            {destination === "OMA" ? (
+              <p className="text-[10px] text-center text-ink/50">
+                Fly home to Omaha — skips the KC stop (flights only in this demo).
+              </p>
+            ) : (
+              <p className="text-[10px] text-center text-ink/50">
+                Rebook the KC leg first — Thanksgiving stop, then on to Omaha.
+              </p>
+            )}
+            <MobilityModePicker
+              selected={mobilityModes}
+              onChange={setMobilityModes}
+              onSubmit={onApplyMobilityModes}
+              loading={loading}
+              disabled={phase === "consent"}
+              flightsOnly={destination === "OMA"}
+            />
+            {optionsReady ? (
+              <>
+                <TrackLegend />
+                {(tracks.length > 0
+                  ? tracks.map((track) => ({ product: track.product, track }))
+                  : offers.map((product) => ({
+                      product,
+                      track: undefined as FareTrackView | undefined,
+                    }))
+                ).map(({ product: p, track }, j) => (
                   <ProductCard
                     key={p.sku}
                     product={p}
                     index={j}
-                    onSelect={onSelectProduct}
+                    selected={p.sku === selectedSku}
+                    onSelect={onSelectFare}
+                    trackLabel={track?.label}
                   />
                 ))}
+                {alsoConsider.length > 0 ? (
+                  <div className="pt-1 space-y-2">
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-ink/45 text-center">
+                      More options · swipe
+                    </p>
+                    <div
+                      className="flex gap-2 overflow-x-auto pb-2 snap-x snap-mandatory"
+                      aria-label="Additional trips you can still book"
+                    >
+                      {alsoConsider.map((p, j) => (
+                        <ProductCard
+                          key={p.sku}
+                          product={p}
+                          index={j + 3}
+                          selected={p.sku === selectedSku}
+                          onSelect={onSelectFare}
+                          compact
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                <button
+                  type="button"
+                  aria-label="Change transport modes"
+                  className="mx-auto flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-ink/50 hover:border-paypal-blue hover:text-paypal-blue"
+                  onClick={() => {
+                    setOptionsReady(false);
+                    setTracks([]);
+                    setAlsoConsider([]);
+                    setOffers([]);
+                  }}
+                >
+                  ↺
+                </button>
+                {phase === "consent" && heldProduct ? (
+                  <div ref={consentRef} className="pt-2">
+                    <ConsentBanner
+                      disabled={loading}
+                      onConfirm={() => void onConfirmPay()}
+                    />
+                  </div>
+                ) : null}
+              </>
+            ) : (
+              <div className="flex justify-center gap-2 py-2 opacity-40" aria-hidden>
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                <span className="h-2 w-2 rounded-full bg-amber-500" />
+                <span className="h-2 w-2 rounded-full bg-paypal-navy" />
               </div>
             )}
           </div>
-        ))}
-        {loading && (
-          <p className="text-sm text-ink/50 animate-pulse">ShopPal is thinking…</p>
-        )}
-        {checkoutProduct && (
+        ) : null}
+
+        {heldProduct && phase === "consent" && !optionsReady ? (
+          <p className="text-center">
+            <span className="inline-flex items-center gap-2 rounded-full bg-success/15 px-3 py-1 text-sm font-bold text-ink">
+              <span className="text-success">✓</span>${heldProduct.priceUsd.toFixed(0)}
+            </span>
+          </p>
+        ) : null}
+
+        {phase === "consent" && !optionsReady ? (
+          <ConsentBanner disabled={loading} onConfirm={() => void onConfirmPay()} />
+        ) : null}
+
+        {checkoutProduct && phase === "checkout" ? (
           <PayPalCheckout
             product={checkoutProduct}
+            sessionId={sessionId}
             demoMode={demoMode}
             onSuccess={(orderId, status) => {
               setCheckoutProduct(null);
-              setTurns((prev) => [
-                ...prev,
-                {
-                  role: "assistant",
-                  content: `Payment **${status}** in sandbox.\n\nOrder ID: \`${orderId}\`\n\nThanks for shopping with ShopPal.`,
-                },
-              ]);
+              setReceipt({ orderId, status });
             }}
-            onError={(msg) => {
-              setTurns((prev) => [
-                ...prev,
-                { role: "assistant", content: msg },
-              ]);
-            }}
+            onError={(msg) => setError(msg)}
           />
-        )}
-      </div>
+        ) : null}
 
-      <form
-        className="mt-4 flex gap-2 border-t border-black/5 pt-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          void sendMessage(input);
-        }}
-      >
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Describe what you need…"
-          className="flex-1 rounded-xl border border-black/10 bg-surface px-4 py-3 text-[15px] focus:outline-none focus:ring-2 focus:ring-paypal-blue"
-          disabled={loading}
-        />
-        <button
-          type="submit"
-          disabled={loading || !input.trim()}
-          className="rounded-xl bg-paypal-navy text-white px-5 py-3 font-semibold disabled:opacity-40 hover:bg-paypal-blue transition"
-        >
-          Send
-        </button>
-      </form>
+        {receipt ? (
+          <PaymentReceipt orderId={receipt.orderId} status={receipt.status} />
+        ) : null}
+      </div>
     </div>
   );
 }
+
