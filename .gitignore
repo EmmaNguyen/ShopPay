@@ -1,3 +1,6 @@
+# Hackathon submission pack stays local (Devpost, video, copy)
+submission/
+
 web/node_modules
 web/.vercel
 submission/video/test-results
